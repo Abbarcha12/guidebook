@@ -1,0 +1,192 @@
+﻿@page "{id}"
+@using Guidebooks.Api.ViewModels
+@model DetailsModel
+
+<script src="/js/page_helper_utilities.js">
+</script>
+
+<!-- Top HeaderMiniSection -->
+<div class="container mt-md-5 pt-md-4 d-none d-md-block">
+    <a href="/" class="minititle">HOME</a> / @Model.GuidebookName
+</div>
+
+<!-- HeroSection -->
+<div id="HeroSection" class="container mt-md-5 pt-md-3 pt-4">
+    <div class="row">
+        <div class="col-md-9">
+            <h2 class="Title">@Model.GuidebookName</h2>
+            <div class="line1"></div>
+            <p class="MiniDes">
+                @Model.GuidebookDescription
+            </p>
+            <div class="mt-3">
+                <div class="tab">
+                    @{
+                        int icount = 1;
+                        string classTab = "active";
+                        foreach (var category in Model.Categories)
+                        {
+                            <button class="tablinks @(classTab)" onclick="openCity(event, 'tab@(icount)')">
+                                @category.Name
+                            </button>
+                            icount++;
+                            classTab = "";
+                        }
+                    }
+                </div>
+                @{
+                    int itcount = 1;
+                    int scount = 1;
+                    int mainheadcount = 0;
+                    foreach (var category in Model.Categories)
+                    {
+                        <div id="tab@(itcount)" class="tabcontent">
+                            <div class="d-flex mt-md-5 mt-4">
+                                <div class="line2"></div>
+                                <span class="Heading ps-1"> @category.Name</span>
+                            </div>
+                            @{
+                                var desinationlist = Model.Destinations.Where(d => d.CategoryId == category.Id);
+                                scount = 1;
+                            }
+                            @foreach (var destination in desinationlist)
+                            {
+                                mainheadcount++;
+                                <div class="Main">
+                                    <div class="mt-md-4 mt-4">
+                                        <h4 class="MainHeaing">@destination.Name</h4>
+                                        <p class="MainSubHeaing">@destination.ShortDescription</p>
+                                    </div>
+                                    <div class="">
+                                        <div class="row g-1">
+                                            @foreach (var image in @destination.ImageUrls)
+                                            {
+
+                                                <div class="col-md-4 col-sm-4 col-4">
+                                                    <img src="@image" alt="@destination.Name" class="img-fluid Heignt" />
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <p class="address">
+                                            <span class="Highlight"><a class="Highlight" target="_blank" rel="noopener noreferrer"
+                                                    href="@GuidebooksConstants.GoogleIntegrationConstants.GOOGLE_MAPS_API_URL?daddr=@destination.Address&saddr=@GuidebooksConstants.GoogleIntegrationConstants.FROM_ADDRESS">Directions</a></span>
+                                            (from the Jet Express) <br> @destination.Address <br>
+                                            <a class="Highlight" href="@destination.WebsiteUrl" target="_blank">Website</a> (opens
+                                            in new tab)
+                                        </p>
+                                        <p class="Decription">
+                                            @destination.LongDescription
+                                        </p>
+                                        <div class=" mt-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="2" viewBox="0 0 985 2"
+                                                fill="#9E9696">
+                                                <path d="M0.5 1H984.5" stroke="#9E9696" />
+                                            </svg>
+                                        </div>
+
+                                        @if (scount == desinationlist.Count())
+                                        {
+                                            <div class="backToTop mt-md-4 mt-3 text-md-start text-center">
+                                                <a href="#" class="backToTop">Back To Top</a>
+                                            </div>
+                                            <div class="mt-md-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="2" viewBox="0 0 985 2"
+                                                    fill="#696b6e">
+                                                    <path d="M0.5 1H984.5" stroke="#696b6e" />
+                                                </svg>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                scount++;
+                            }
+                        </div>
+                        itcount++;
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            @{
+                int adscount = mainheadcount;
+            }
+            @for (int ic = 0; ic < mainheadcount; ic++)
+            {
+                if (ic == 0)
+                {
+                    <div class="mt-3 class-@(ic)">
+                        <img src="/images/234.png" class="img-fluid" alt="" />
+                    </div>
+                }
+                else
+                {
+                    <div class="mt-3 ads-block d-md-block d-none class-@(ic)">
+                        <img src="/images/Ads.png" class="img-fluid" alt="" />
+                    </div>
+                }
+
+            }
+
+        </div>
+
+
+    </div>
+</div>
+
+<script>
+    // Set the default active tab
+    document.getElementById("tab1").style.display = "block";
+    //document.getElementById("defaultTabLink").className += " active";
+
+    // The function openCity takes two parameters: evt (event) and cityName.
+    function openCity(evt, cityName) {
+        // Hide all elements with the class "tabcontent"
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Remove the "active" class from all elements with the class "tablinks"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Display the element with the ID equal to the cityName parameter
+        document.getElementById(cityName).style.display = "block";
+
+        // Add the "active" class to the clicked element (tab link)
+        evt.currentTarget.className += " active";
+        ShowAdsContent();
+    }
+    function ShowAdsContent() {
+        $('.ads-block').removeClass('d-md-block');
+        $('.class-0,.class-1,.class-2').show();
+        var contents = $('.tabcontent');
+        for (var ic = 0; ic < $(contents).length; ic++) {
+            if ($(contents[ic]).is(':visible')) {
+                var mainheading = $(contents[ic]).find('.MainHeaing');
+                console.log($(mainheading).length);
+                var adscount = Math.floor($('#HeroSection').height() / $('.class-0').height());
+
+                for (var adc = 0; adc < adscount; adc++) {
+                    $('.class-' + adc).addClass('d-md-block');
+                }
+                console.log(adscount);
+            }
+
+        }
+    }
+    $(window).on('load', function () {
+        $('.class-0').removeClass('d-none');
+        ShowAdsContent();
+    });
+
+    $(window).resize(function () {
+        ShowAdsContent();
+    });
+</script>

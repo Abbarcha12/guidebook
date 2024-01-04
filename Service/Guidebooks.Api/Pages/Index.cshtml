@@ -1,0 +1,92 @@
+﻿@page
+@using Guidebooks.Api.ViewModels
+@model IndexModel
+
+<script src="/js/page_helper_utilities.js">
+</script>
+
+@{
+    int buttonCount = 1;
+    int headerCount = 1;
+    int count = 1;
+}
+
+@{
+    var headerlist = Model.Guidebooks.Select(s => s.Header).Distinct();
+}
+
+<!-- Hero Section -->
+<div class="Hero_Sectio">
+    <div class="overlay">
+        <h1 class="MainHeading">Welcome to my Vacationland area Guidebooks!</h1>
+        <div class="mt-5">
+            @foreach (var head in headerlist)
+            {
+                if (buttonCount == 1)
+                {
+                    <button class="Btn" onclick="location.href='#tab@(buttonCount)'">@head</button>
+                            
+                }
+                else
+                {
+                    <button class="Btn1" onclick="location.href='#tab@(buttonCount)'">@head</button>
+                }
+                buttonCount++;
+            }
+        </div>
+    </div>
+</div>
+
+@foreach (var head in headerlist)
+{
+
+    <!-- Foodie -->
+    <div id="tab@(headerCount)" class="Foodies d-flex align-items-center justify-content-center">
+        <div class="line"></div>
+        <h2 class="HeadingTwo">@head Guidebooks</h2>
+    </div>
+    headerCount++;
+
+    <!-- Cards Section -->
+    var guidebooklist = Model.Guidebooks.Where(s => s.Header == head).ToList();
+    <div class="container-fluid">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-10">
+                <div class="row d-flex justify-content-center md-md-3">
+                    @foreach (var guidebook in guidebooklist)
+                    {
+                        string classsName = "";
+                        if (count % 2 != 0)
+                        {
+                            classsName = "col-sm-11 ";
+                        }
+                        <div class="col-md-6 col-sm-12 CardHeight @classsName">
+                            <a asp-page="Details" asp-route-id="@guidebook.Id" class="guidebook-link" onclick="$('.spinner').css('display', 'block');">
+                                <div class="exploreCard defaultHeight">
+                                    <img src="@guidebook.ImageUrl" class="img-fluid ImageClss" alt="" />
+                                    <div class="miniCard p-4">
+                                        <h3 class="title">
+                                            @guidebook.Name <div class="line1"></div>
+                                        </h3>
+                                        <p class="Cardtext mt-2">
+                                            @guidebook.Description
+                                        </p>
+                                        <button class="ExploreBtn">Explore</button>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        count++;
+                        if (count % 2 != 0)
+                        {
+                            <div class="col-md-12 ">
+                                &nbsp;
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

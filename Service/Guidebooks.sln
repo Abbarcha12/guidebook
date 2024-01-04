@@ -1,0 +1,95 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Guidebooks.Api", "Guidebooks.Api\Guidebooks.Api.csproj", "{6BEE3701-5E01-4BE2-96D0-4D6C026C5E56}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI-CD", "CI-CD", "{2A89CC19-2765-4058-8497-F1EC71B6B1B7}"
+	ProjectSection(SolutionItems) = preProject
+		..\CI-CD\README.md = ..\CI-CD\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure-pipelines", "azure-pipelines", "{106E2F37-4126-430C-9962-6C4BA87EBE01}"
+	ProjectSection(SolutionItems) = preProject
+		..\CI-CD\azure-pipelines\guidebooks-create-environments.yml = ..\CI-CD\azure-pipelines\guidebooks-create-environments.yml
+		..\CI-CD\azure-pipelines\guidebooks-dev-deploy.yml = ..\CI-CD\azure-pipelines\guidebooks-dev-deploy.yml
+		..\CI-CD\azure-pipelines\guidebooks-release-deploy.yml = ..\CI-CD\azure-pipelines\guidebooks-release-deploy.yml
+		..\CI-CD\azure-pipelines\guidebooks-tests.yml = ..\CI-CD\azure-pipelines\guidebooks-tests.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "terraform", "terraform", "{829C9B33-B7C8-4B2A-AA71-0A75237578E5}"
+	ProjectSection(SolutionItems) = preProject
+		..\CI-CD\terraform\.terraform.lock.hcl = ..\CI-CD\terraform\.terraform.lock.hcl
+		..\CI-CD\terraform\backend = ..\CI-CD\terraform\backend
+		..\CI-CD\terraform\main.tf = ..\CI-CD\terraform\main.tf
+		..\CI-CD\terraform\main.tfplan = ..\CI-CD\terraform\main.tfplan
+		..\CI-CD\terraform\variables.tf = ..\CI-CD\terraform\variables.tf
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{D9621B9F-0E5E-4E92-897C-21FD8B2CBFA6}"
+	ProjectSection(SolutionItems) = preProject
+		..\CI-CD\azure-pipelines\templates\env-loop-pipeline-cli.yml = ..\CI-CD\azure-pipelines\templates\env-loop-pipeline-cli.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jobs", "jobs", "{8456B9FF-0B7C-4336-86DB-64BAF3158E04}"
+	ProjectSection(SolutionItems) = preProject
+		..\CI-CD\azure-pipelines\templates\jobs\build-and-publish-guidebooks-app.yml = ..\CI-CD\azure-pipelines\templates\jobs\build-and-publish-guidebooks-app.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "steps", "steps", "{EE40DF5F-6780-4C68-B670-320491EA8AA5}"
+	ProjectSection(SolutionItems) = preProject
+		..\CI-CD\azure-pipelines\templates\steps\run-dot-net-unit-tests.yml = ..\CI-CD\azure-pipelines\templates\steps\run-dot-net-unit-tests.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "env", "env", "{FCAD14E7-6940-4DE6-A3D9-B84F2A48D26B}"
+	ProjectSection(SolutionItems) = preProject
+		..\CI-CD\terraform\env\demo-usa.tfvars = ..\CI-CD\terraform\env\demo-usa.tfvars
+		..\CI-CD\terraform\env\dev-usa.tfvars = ..\CI-CD\terraform\env\dev-usa.tfvars
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tasks", "tasks", "{662BE045-3599-4595-B440-E427A0D8B538}"
+	ProjectSection(SolutionItems) = preProject
+		..\CI-CD\azure-pipelines\templates\tasks\az-login.yml = ..\CI-CD\azure-pipelines\templates\tasks\az-login.yml
+		..\CI-CD\azure-pipelines\templates\tasks\inject-tfvars.yml = ..\CI-CD\azure-pipelines\templates\tasks\inject-tfvars.yml
+		..\CI-CD\azure-pipelines\templates\tasks\inject-variables.yml = ..\CI-CD\azure-pipelines\templates\tasks\inject-variables.yml
+		..\CI-CD\azure-pipelines\templates\tasks\terraform-apply-cli.yml = ..\CI-CD\azure-pipelines\templates\tasks\terraform-apply-cli.yml
+		..\CI-CD\azure-pipelines\templates\tasks\terraform-init-cli.yml = ..\CI-CD\azure-pipelines\templates\tasks\terraform-init-cli.yml
+		..\CI-CD\azure-pipelines\templates\tasks\terraform-plan-cli.yml = ..\CI-CD\azure-pipelines\templates\tasks\terraform-plan-cli.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{6641D407-8C1C-4CDD-B2B0-A38CAF184303}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{583D0FA4-2D5F-4D55-AD0F-F611B6B9117F}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6BEE3701-5E01-4BE2-96D0-4D6C026C5E56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BEE3701-5E01-4BE2-96D0-4D6C026C5E56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BEE3701-5E01-4BE2-96D0-4D6C026C5E56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BEE3701-5E01-4BE2-96D0-4D6C026C5E56}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{106E2F37-4126-430C-9962-6C4BA87EBE01} = {2A89CC19-2765-4058-8497-F1EC71B6B1B7}
+		{829C9B33-B7C8-4B2A-AA71-0A75237578E5} = {2A89CC19-2765-4058-8497-F1EC71B6B1B7}
+		{D9621B9F-0E5E-4E92-897C-21FD8B2CBFA6} = {106E2F37-4126-430C-9962-6C4BA87EBE01}
+		{8456B9FF-0B7C-4336-86DB-64BAF3158E04} = {D9621B9F-0E5E-4E92-897C-21FD8B2CBFA6}
+		{EE40DF5F-6780-4C68-B670-320491EA8AA5} = {D9621B9F-0E5E-4E92-897C-21FD8B2CBFA6}
+		{FCAD14E7-6940-4DE6-A3D9-B84F2A48D26B} = {829C9B33-B7C8-4B2A-AA71-0A75237578E5}
+		{662BE045-3599-4595-B440-E427A0D8B538} = {D9621B9F-0E5E-4E92-897C-21FD8B2CBFA6}
+		{583D0FA4-2D5F-4D55-AD0F-F611B6B9117F} = {6641D407-8C1C-4CDD-B2B0-A38CAF184303}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C045B0C8-F542-48E6-B537-384345287862}
+	EndGlobalSection
+EndGlobal

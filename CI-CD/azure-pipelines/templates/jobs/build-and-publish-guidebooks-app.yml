@@ -1,0 +1,46 @@
+parameters:
+  - name: vmImage
+    type: string
+    default: $(defaultVmImage)
+  - name: productName
+    type: string
+    default: 
+  - name: webAppName
+    type: string
+    default: 
+
+jobs:
+- job: guidebooksAppBuildAndPush
+  displayName: Build Guidebooks
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+  - task: UseDotNet@1
+    displayName: Use .Net
+    inputs:
+      version: 6.0.x
+
+  - task: DotNetCoreCLI@1
+    displayName: Create the Guidebooks App Package
+    inputs:
+      command: 'publish'
+      projects: '$(Build.SourcesDirectory)/Service/Guidebooks.Api/Guidebooks.Api.csproj'
+      arguments: '-c:Release -o:$(Build.ArtifactStagingDirectory)/${{ parameters.productName }}'
+      publishWebProjects: false
+      zipAfterPublish: false
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/${{ parameters.productName }}'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/${{ parameters.productName }}-package.zip' 
+      replaceExistingArchive: true
+
+  - task: PublishPipelineArtifact@1
+    displayName: Upload archive to pipeline
+    inputs:
+      targetPath: '$(Build.ArtifactStagingDirectory)/${{ parameters.productName }}-package.zip'
+      artifact: '${{ parameters.webAppName }}-package-zip'
+      publishLocation: 'pipeline'

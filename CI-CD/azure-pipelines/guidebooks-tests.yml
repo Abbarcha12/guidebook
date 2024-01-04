@@ -1,0 +1,21 @@
+# CI/CD Pipeline for running tests only
+#
+# This pipeline is designed to build and test MRI Chatbot product.
+
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  system.debug: false
+  defaultVmImage: 'windows-latest'
+
+stages:
+  - stage: test
+    jobs:
+      - job: buildAndTest
+        pool:
+          vmImage: $(defaultVmImage)
+        steps:
+          - template: templates/steps/run-dot-net-unit-tests.yml

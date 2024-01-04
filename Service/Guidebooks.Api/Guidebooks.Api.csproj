@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Images\FoodieWalkingDistance\15_WineMerchant_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\16_Moseleys_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\17_PortSandusky_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\18_JBistro_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\19_JBistro_II.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\1_Everwild_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\21_SmallCityTaphouse_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\22_Vita_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\26_Dockside_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\27_Dockside_II.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\28_Dockside_III.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\29_OhTaco_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\30_NobleAxes_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\4_SaucyBrewWorks_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\5_SaucyCoffee_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\6_MacaRoot_I.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\7_MacaRoot_II.jpg" />
+    <None Include="wwwroot\Images\FoodieWalkingDistance\9_WakeUpAndWaffle_I.jpg" />
+    <None Include="wwwroot\js\page_helper_utilities.js" />
+  </ItemGroup>
+
+</Project>

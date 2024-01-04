@@ -1,0 +1,236 @@
+# -------------------------------------------------------- #
+# Define Parameters                                        #
+# -------------------------------------------------------- #
+parameters:
+  # Working directory where terraform is run (root module)
+  #
+  - name: buildNumber
+    displayName: Id of build for unique plan out file
+    type: string
+    default: $(Build.BuildNumber)
+
+  # dependsOn
+  #
+  - name: dependsOn
+    displayName: Stages or Jobs all environments should depend on.
+    type: object
+    default: []
+
+  # Whether or not to plan regardless of dependency results
+  #
+  - name: alwaysPlan
+    displayName: Whether or not to plan regardless of dependency results.
+    type: boolean
+    default: false
+
+  # Timeout in Minutes
+  #
+  - name: timeoutInMinutes
+    displayName: Timeout in Minutes
+    type: number
+    default: 360
+
+  # Apply Parallelism
+  #
+  - name: applyParallelism
+    displayName: Limit the number of concurrent operation as Terraform walks the graph.
+    type: number
+    default: 10
+
+  - name: defaultBranchNames
+    displayName: Branch names which can be applied to when environments.x.applyFromFeatureBranch is not set to 'true'.
+    type: object
+    default:
+    - 'refs/heads/master'
+    - 'refs/heads/main'
+
+  # Provide environments and their corresponding variable groups
+  #
+  - name: environments
+    type: object
+    displayName: Environments w/ their Variable Groups, Environment Variables to be injected from them, and backend parameters
+    default: []
+    # ex.
+    # - name: dev-eu-spoke-edge
+    #   environment: dev
+    #   terraformVersion: 0.14.10
+    #   workingDirectory: $(System.DefaultWorkingDirectory)/env/dev/eu/spoke/edge
+    #   variables:
+    #   - group: tf-backend-dev-eu
+    #   - group: dev-eu-spoke-edge
+    #   backend:
+    #     provider:             azurerm
+    #     service_connection:   sc-devops-tf_backend
+    #     resource_group_name:  $(az_backend_resource_group_name)
+    #     storage_account_name: $(az_backend_storage_account_name)
+    #     container_name:       $(az_backend_container_name)
+    #     key:                  $(az_backend_state_file_name_edge)
+    #   environmentVariables:
+    #     region:                  $(region)
+    #     environment:             $(environment)
+    #     leverton_admin_user:     $(leverton_admin_user)
+    #     cluster_public_ssh_key:  $(cluster_public_ssh_key)
+    #     database_admin_user:     $(database_admin_user)
+    #     database_admin_password: $(database_admin_password)
+
+stages:
+# -------------------------------------------------------- #
+# Create stage for each environment for Apply to depend on #
+# -------------------------------------------------------- #
+- ${{ each env in parameters.environments }}:
+  - stage: ${{ format('{0}{1}', replace( env.name, '-', '' ), 'Plan' ) }}
+    displayName: ${{ env.name }} - Plan
+
+    # Each environment runs independent, and happens on Pull Request
+    #
+    dependsOn: ${{ parameters.dependsOn }}
+    condition: or( and( or(failed(), not(canceled())), eq( '${{ parameters.alwaysPlan }}', 'true' )), and( succeeded(), eq( '${{ parameters.alwaysPlan }}', 'false' )))
+    # condition: eq(variables['Build.Reason'], 'PullRequest')
+
+    jobs:
+      # -------------------------------------------------------- #
+      # Run Terraform plan to inform user of anticipated changes #
+      # -------------------------------------------------------- #
+    - job: TerraformPlan
+      dependsOn: []
+
+      # Following this doc: https://github.com/microsoft/azure-pipelines-yaml/blob/master/design/each-expression.md
+      #
+      ${{ each envSetting in env }}:
+        ${{ if in(envSetting.key, 'variables') }}:
+          ${{ envSetting.key }}: ${{ envSetting.value }}
+
+      steps:
+      # -------------------------------------------------------- #
+      # Terraform Install & Init                                 #
+      # -------------------------------------------------------- #
+      - template: tasks/terraform-init-cli.yml
+        parameters:
+          terraformVersion: ${{ coalesce(env.terraformVersion, '') }}
+          workingDirectory: ${{ coalesce(env.workingDirectory, '$(System.DefaultWorkingDirectory)/terraform') }}
+          backend:
+            ${{ each backend in env.backend }}:
+              ${{ backend.key }}: ${{ backend.value }}
+          environmentVariables:
+            ${{ each envVar in env.environmentVariables }}:
+              ${{ envVar.key }}: ${{ envVar.value }}
+
+      # -------------------------------------------------------- #
+      # Inject Environment Variables                             #
+      # -------------------------------------------------------- #
+      - template: tasks/inject-variables.yml
+        parameters:
+          workingDirectory: ${{ coalesce(env.workingDirectory, '$(System.DefaultWorkingDirectory)/terraform') }}
+          environmentVariables:
+            ARM_SUBSCRIPTION_ID:        $(ARM_SUBSCRIPTION_ID)
+            ARM_CLIENT_ID:              $(ARM_CLIENT_ID)
+            ARM_CLIENT_SECRET:          $(ARM_CLIENT_SECRET)
+            ARM_TENANT_ID:              $(ARM_TENANT_ID)
+            AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
+            ${{ each envVar in env.environmentVariables }}:
+              ${{ envVar.key }}: ${{ envVar.value }}
+      
+      - ${{ if env.tfvars }}:
+        - template: tasks/inject-tfvars.yml
+          parameters:
+            workingDirectory: ${{ coalesce(env.workingDirectory, '$(System.DefaultWorkingDirectory)/terraform') }}
+            tfvarsFile: ${{ env.tfvars }}
+            environmentVariables:
+              ARM_SUBSCRIPTION_ID:        $(ARM_SUBSCRIPTION_ID)
+              ARM_CLIENT_ID:              $(ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET:          $(ARM_CLIENT_SECRET)
+              ARM_TENANT_ID:              $(ARM_TENANT_ID)
+              AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
+              ${{ each envVar in env.environmentVariables }}:
+                ${{ envVar.key }}: ${{ envVar.value }}
+
+      # -------------------------------------------------------- #
+      # Terraform Validate & Plan                                #
+      # -------------------------------------------------------- #
+      - template: tasks/terraform-plan-cli.yml
+        parameters:
+          workingDirectory: ${{ coalesce(env.workingDirectory, '$(System.DefaultWorkingDirectory)/terraform') }}
+          planArtifactName: ${{ replace( env.name, '-', '' ) }}.${{ parameters.buildNumber }}
+          
+          # Conditionally inject tfvars file.
+          #
+          ${{ if env.tfvars }}:
+            tfvars: ${{ env.tfvars }}
+
+          # Inject environment variables.
+          #
+          environmentVariables:
+            ARM_SUBSCRIPTION_ID:        $(ARM_SUBSCRIPTION_ID)
+            ARM_CLIENT_ID:              $(ARM_CLIENT_ID)
+            ARM_CLIENT_SECRET:          $(ARM_CLIENT_SECRET)
+            ARM_TENANT_ID:              $(ARM_TENANT_ID)
+            AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
+            ${{ each envVar in env.environmentVariables }}:
+              ${{ envVar.key }}: ${{ envVar.value }}
+          
+
+# -------------------------------------------------------- #
+# Create a stage for each environment                      #
+# -------------------------------------------------------- #
+- ${{ each env in parameters.environments }}:
+  - stage: ${{ replace( env.name, '-', '' ) }}
+    displayName: ${{ env.name }} - Apply
+
+    # Depend on Plan stage, and only happens when source branch is master
+    #
+    dependsOn: ["${{ format('{0}{1}', replace( env.name, '-', '' ), 'Plan' ) }}"]
+    condition: or( and( succeeded(), eq( '${{ env.applyFromFeatureBranch }}', 'true' ) ), and( succeeded(), ${{ containsValue( parameters.defaultBranchNames, variables['Build.SourceBranch']) }} ) )
+
+    jobs:
+    # -------------------------------------------------------- #
+    # Terraform Apply                                          #
+    # -------------------------------------------------------- #
+    - deployment: TerraformApply
+      environment: ${{ env.environment }}
+      timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+
+      # Following this doc: https://github.com/microsoft/azure-pipelines-yaml/blob/master/design/each-expression.md
+      #
+      ${{ each envSetting in env }}:
+        ${{ if in(envSetting.key, 'variables') }}:
+          ${{ envSetting.key }}: ${{ envSetting.value }}
+
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            # Pull down source code (needed for terraform/helm repos)
+            #
+            - checkout: self
+
+            # -------------------------------------------------------- #
+            # Terraform Install & Init                                 #
+            # -------------------------------------------------------- #
+            - template: tasks/terraform-init-cli.yml
+              parameters:
+                terraformVersion: ${{ coalesce(env.terraformVersion, '') }}
+                workingDirectory: ${{ coalesce(env.workingDirectory, '$(System.DefaultWorkingDirectory)/terraform') }}        
+                backend:
+                  ${{ each backend in env.backend }}:
+                    ${{ backend.key }}: ${{ backend.value }}
+                environmentVariables:
+                  ${{ each envVar in env.environmentVariables }}:
+                    ${{ envVar.key }}: ${{ envVar.value }}
+
+            # -------------------------------------------------------- #
+            # Terraform Apply from Outfile                             #
+            # -------------------------------------------------------- #
+            - template: tasks/terraform-apply-cli.yml
+              parameters:
+                workingDirectory: ${{ coalesce(env.workingDirectory, '$(System.DefaultWorkingDirectory)/terraform') }}        
+                planArtifactName: ${{ replace( env.name, '-', '' ) }}.${{ parameters.buildNumber }}
+                timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+                applyParallelism: ${{ parameters.applyParallelism }}
+                environmentVariables:
+                  ARM_SUBSCRIPTION_ID:        $(ARM_SUBSCRIPTION_ID)
+                  ARM_CLIENT_ID:              $(ARM_CLIENT_ID)
+                  ARM_CLIENT_SECRET:          $(ARM_CLIENT_SECRET)
+                  ARM_TENANT_ID:              $(ARM_TENANT_ID)
+                  AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
+                  ${{ each envVar in env.environmentVariables }}:
+                    ${{ envVar.key }}: ${{ envVar.value }}

@@ -1,0 +1,89 @@
+# -------------------------------------------------------- #
+# Define Parameters                                        #
+# -------------------------------------------------------- #
+parameters:
+  # Any environment variables to inject into valueFile
+  #
+  - name: environmentVariables
+    type: object
+    displayName: Environment Variables for Value File Injection
+    default: null
+
+  # Timeout in Minutes
+  #
+  - name: timeoutInMinutes
+    displayName: Timeout in Minutes
+    type: number
+    default: 360
+
+  # Apply Parallelism
+  #
+  - name: applyParallelism
+    displayName: Limit the number of concurrent operation as Terraform walks the graph.
+    type: number
+    default: 10
+
+  # Working directory where terraform is run (root module)
+  #
+  - name: planArtifactName
+    displayName: Id of build for unique plan out file
+    type: string
+    default: $(System.StageName).$(Build.BuildNumber)
+
+  # Working directory where terraform is run (root module)
+  #
+  - name: workingDirectory
+    displayName: Terraform Root Module Directory
+    type: string
+    default: $(System.DefaultWorkingDirectory)
+
+steps:
+# -------------------------------------------------------- #
+# Download Plan Outfile                                    #
+# -------------------------------------------------------- #
+
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifact: ${{ parameters.planArtifactName }}.tfplan
+    path: ${{ parameters.workingDirectory }}
+
+# -------------------------------------------------------- #
+# Terraform Plan                                           #
+# -------------------------------------------------------- #
+
+- task: Bash@3
+  timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+  displayName: Terraform - apply
+  env:
+    outfile: ${{ parameters.planArtifactName }}.tfplan
+
+    # Apply parameters
+    #
+    parallelism: ${{ parameters.applyParallelism }}
+
+    # Loop over any environment varialbes passed in the environmentVariables object
+    #
+    ${{ each var in parameters.environmentVariables }}:
+      ${{ var.key }}: ${{var.value}}
+  inputs:
+    targetType: 'inline'
+    workingDirectory: ${{ parameters.workingDirectory }}
+    script: |
+      terraform apply -input=false -parallelism="${parallelism}" "${outfile}"
+
+- task: Bash@3
+  timeoutInMinutes: ${{ parameters.timeoutInMinutes }}
+  displayName: Terraform - output
+  env:
+    # Loop over any environment varialbes passed in the environmentVariables object
+    #
+    ${{ each var in parameters.environmentVariables }}:
+      ${{ var.key }}: ${{var.value}}
+  inputs:
+    targetType: 'inline'
+    workingDirectory: ${{ parameters.workingDirectory }}
+    script: |
+      terraform output
+      for key in $(jq -r 'keys[]' <<< $(terraform output -json)); do
+        echo "##vso[task.setvariable variable=$key]$(terraform output -json $key | jq -rcM '.')"
+      done

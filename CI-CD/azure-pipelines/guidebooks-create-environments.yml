@@ -1,0 +1,55 @@
+# CI/CD Pipeline for running terraform to create resource group and resources in Azure.
+#
+# This pipeline is designed to provision environments for MRI Chatbot product.
+
+trigger: none
+
+pr: none
+
+variables:
+- name: tf_version
+  value: 1.2.7
+
+stages:
+
+- template: templates/env-loop-pipeline-cli.yml
+  parameters:
+    environments:
+
+    # +++++++++++++++++++++++++++++++++++++++ #
+    # DEV USA #  
+    # +++++++++++++++++++++++++++++++++++++++ #
+    - name: PROVISTION-DEV-USA
+      environment: dev-usa
+      terraformVersion: $(tf_version)
+      workingDirectory: $(System.DefaultWorkingDirectory)/CI-CD/terraform
+      tfvars: env/dev-usa.tfvars
+      applyFromFeatureBranch: true
+      variables:
+      - group: dev-usa-subscription-backend-variables
+      backend:
+        provider: azurerm
+        service_connection: usa-polel01-service-connection
+        resource_group_name: $(backend_resource_group_name)
+        storage_account_name: $(backend_storage_account_name)
+        container_name: $(backend_storage_container_name)
+        key: dev-usa.tfstate
+
+    # +++++++++++++++++++++++++++++++++++++++ #
+    # DEMO USA #  
+    # +++++++++++++++++++++++++++++++++++++++ #
+    - name: PROVISTION-DEMO-USA
+      environment: demo-usa
+      terraformVersion: $(tf_version)
+      workingDirectory: $(System.DefaultWorkingDirectory)/CI-CD/terraform
+      tfvars: env/demo-usa.tfvars
+      applyFromFeatureBranch: false
+      variables:
+      - group: prod-usa-subscription-backend-variables
+      backend:
+        provider: azurerm
+        service_connection: usa-polel01-service-connection
+        resource_group_name: $(backend_resource_group_name)
+        storage_account_name: $(backend_storage_account_name)
+        container_name: $(backend_storage_container_name)
+        key: demo-usa.tfstate

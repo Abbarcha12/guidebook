@@ -1,0 +1,74 @@
+# -------------------------------------------------------- #
+# Define Parameters                                        #
+# -------------------------------------------------------- #
+parameters:
+  # Any environment variables to inject into valueFile
+  #
+  - name: environmentVariables
+    type: object
+    displayName: Environment Variables for Value File Injection
+    default: null
+
+  # Working directory where terraform is run (root module)
+  #
+  - name: planArtifactName
+    displayName: Id of build for unique plan out file
+    type: string
+    default: $(System.StageName).$(Build.BuildNumber)
+
+  # Working directory where terraform is run (root module)
+  #
+  - name: workingDirectory
+    displayName: Terraform Root Module Directory
+    type: string
+    default: $(System.DefaultWorkingDirectory)
+  
+  # Optionally specify a tfvars file
+  #
+  - name: tfvars
+    displayName: Terraform variable file
+    type: string
+    default:
+
+steps:
+# -------------------------------------------------------- #
+# Terraform Validate                                       #
+# -------------------------------------------------------- #
+
+- task: Bash@3
+  displayName: Terraform - validate
+  inputs:
+    targetType: 'inline'
+    workingDirectory: ${{ parameters.workingDirectory }}
+    script: |
+      terraform validate
+
+# -------------------------------------------------------- #
+# Terraform Plan                                           #
+# -------------------------------------------------------- #
+
+- task: Bash@3
+  displayName: Terraform - plan
+  env:
+    outfile: ${{ parameters.planArtifactName }}.tfplan
+
+    # Loop over any environment varialbes passed in the environmentVariables object
+    #
+    ${{ each var in parameters.environmentVariables }}:
+      ${{ var.key }}: ${{var.value}}
+  inputs:
+    targetType: 'inline'
+    workingDirectory: ${{ parameters.workingDirectory }}
+    ${{ if parameters.tfvars }}:
+      script: |
+        terraform plan -input=false -out "${outfile}" -var-file=${{ parameters.tfvars }}
+    ${{ else }}:
+      script: |
+        terraform plan -input=false -out "${outfile}"
+
+# -------------------------------------------------------- #
+# Publish Artifact for Apply                               #
+# -------------------------------------------------------- #
+
+- publish: ${{ parameters.workingDirectory }}/${{ parameters.planArtifactName }}.tfplan
+  artifact: ${{ parameters.planArtifactName }}.tfplan

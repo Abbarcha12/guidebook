@@ -1,0 +1,111 @@
+# -------------------------------------------------------- #
+# Define Parameters                                        #
+# -------------------------------------------------------- #
+parameters:
+  # Any environment variables to inject into valueFile
+  #
+  - name: environmentVariables
+    type: object
+    displayName: Environment Variables for Value File Injection
+    default: null
+
+  # Version to run terraform as
+  #
+  - name: terraformVersion
+    displayName: Terraform Version
+    type: string
+
+  # Working directory where terraform is run (root module)
+  #
+  - name: workingDirectory
+    displayName: Terraform Root Module Directory
+    type: string
+    default: $(System.DefaultWorkingDirectory)
+
+  # Any service connection backend that may exist.
+  #
+  - name: backend
+    displayName: Terraform Backend
+    type: object
+    default: null
+
+  # Terraform Workspace if using any
+  #
+  - name: workspace
+    displayName: Terraform Workspace
+    type: string
+    default: null
+
+steps:
+# -------------------------------------------------------- #
+# Grab git credentials to use for any module calls         #
+# -------------------------------------------------------- #
+- task: Bash@3
+  displayName: Git - Inject Credentials
+  inputs:
+    targetType: 'inline'
+    script: |
+      git config --global http.extraHeader "AUTHORIZATION: bearer $(System.AccessToken)"
+
+# -------------------------------------------------------- #
+# Login to Azure CLI                                       #
+# -------------------------------------------------------- #
+- template: az-login.yml
+  parameters:
+    serviceConnection: ${{ parameters.backend.service_connection }}
+
+# -------------------------------------------------------- #
+# Install Terraform Binary                                 #
+# -------------------------------------------------------- #
+- task: TerraformInstaller@0
+  displayName: Terraform - install v${{ parameters.terraformVersion }}
+  inputs:
+    terraformVersion: ${{ parameters.terraformVersion }}
+
+# -------------------------------------------------------- #
+# Terraform Init                                           #
+# -------------------------------------------------------- #
+- task: Bash@3
+  displayName: Terraform - init
+  env:
+    # Remote state file configuration
+    #
+    resource_group_name:  ${{ parameters.backend.resource_group_name }}
+    storage_account_name: ${{ parameters.backend.storage_account_name }}
+    container_name:       ${{ parameters.backend.container_name }}
+    key:                  ${{ parameters.backend.key }}
+
+    # Automatically authentication for init to AzureRM provider
+    #
+    ARM_SUBSCRIPTION_ID:        $(ARM_SUBSCRIPTION_ID)
+    ARM_CLIENT_ID:              $(ARM_CLIENT_ID)
+    ARM_CLIENT_SECRET:          $(ARM_CLIENT_SECRET)
+    ARM_TENANT_ID:              $(ARM_TENANT_ID)
+    AZDO_PERSONAL_ACCESS_TOKEN: $(System.AccessToken)
+
+    # Loop over any environment varialbes passed in the environmentVariables object
+    #
+    ${{ each var in parameters.environmentVariables }}:
+      ${{ var.key }}: ${{var.value}}
+  inputs:
+    targetType: 'inline'
+    workingDirectory: ${{ parameters.workingDirectory }}
+    script: |
+      cat << BACKEND >> azurerm_backend_config
+      resource_group_name  = "${resource_group_name}"
+      storage_account_name = "${storage_account_name}"
+      container_name       = "${container_name}"
+      key                  = "${key}"
+      BACKEND
+      cat azurerm_backend_config
+      terraform init -backend-config azurerm_backend_config -input=false
+
+# -------------------------------------------------------- #
+# Cleanup git credentials for nested modules               #
+# -------------------------------------------------------- #
+- task: Bash@3
+  displayName: Git - Scrub Credentials
+  inputs:
+    targetType: 'inline'
+    script: |
+      git config --global --unset-all http.extraHeader

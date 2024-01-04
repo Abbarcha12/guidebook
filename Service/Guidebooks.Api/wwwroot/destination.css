@@ -1,0 +1,186 @@
+.minititle {
+  color: #5b5958;
+  font-family: DM Sans;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
+  text-transform: uppercase;
+}
+.Title {
+  color: #161616;
+
+  text-shadow: 0px 10px 29px rgba(0, 0, 0, 0.1);
+  font-family: Enriqueta;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%; /* 50.4px */
+}
+.MiniDes {
+  color: #5b5858;
+
+  text-shadow: 0px 10px 29px rgba(0, 0, 0, 0.1);
+  font-family: DM Sans;
+  font-size: 20px;
+  margin-top: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 28px */
+}
+.tab {
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  position: relative;
+}
+.tab button {
+  background-color: transparent !important;
+  padding: 0;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: #5b5958;
+  font-family: DM Sans !important;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.tab button.active {
+  color: #ba7d5c;
+  border-bottom: 1.5px solid #ba7d5c;
+}
+.tabcontent {
+  display: none;
+  border-top: none;
+}
+.Heading {
+  color: #161616;
+  text-align: center;
+  text-shadow: 0px 4.932px 14.303px rgba(0, 0, 0, 0.1);
+
+  /* App text style/H6/Bold */
+  font-family: Enriqueta;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 26px; /* 144.444% */
+  text-transform: capitalize;
+}
+.line2 {
+  width: 38.471px;
+  height: 3.946px;
+  background: #ba7d5c;
+  margin-top: 11px;
+}
+.MainHeaing {
+  color: #ba7d5c;
+
+  text-shadow: 0px 10px 29px rgba(0, 0, 0, 0.1);
+  font-family: DM Sans;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+}
+.MainSubHeaing {
+  color: #5b5958;
+  text-shadow: 0px 10px 29px rgba(0, 0, 0, 0.1);
+  font-family: DM Sans;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+}
+.address {
+  color: #5b5958;
+  /* max-width: 355px !important; */
+  font-family: DM Sans;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 120%;
+}
+.Highlight {
+  color: #ba7d5c;
+  text-decoration: underline;
+}
+a.Highlight {
+  text-decoration: underline !important;
+}
+
+.Decription {
+  color: #5b5958;
+
+  /* Easy Ease */
+  text-shadow: 0px 10px 29px rgba(0, 0, 0, 0.1);
+  font-family: DM Sans !important;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 160%; /* 24px */
+}
+.backToTop {
+  color: #ba7d5c;
+
+  /* Easy Ease */
+  text-shadow: 0px 10px 29px rgba(0, 0, 0, 0.1);
+  font-family: DM Sans;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%; /* 28px */
+}
+.tablinks:hover {
+  color: #ba7d5c !important;
+}
+.Heignt {
+  height: 250px !important;
+  width: 100% !important;
+}
+@media screen and (max-width: 600px) {
+  .minititle {
+    display: none;
+  }
+  .Heignt {
+    height: 108px !important;
+  }
+  .Title {
+    font-size: 20px;
+  }
+  .MiniDes {
+    font-size: 14px;
+  }
+  .tab button {
+    font-size: 12px;
+  }
+  .tab {
+    width: 100%;
+  }
+  .MainHeaing {
+    font-size: 16px;
+  }
+  .MainSubHeaing {
+    font-size: 14px;
+  }
+  .address {
+    font-size: 14px;
+  }
+  .Decription {
+    font-size: 12px;
+    line-height: 190%;
+  }
+  .backToTop {
+    font-size: 12px;
+  }
+  .smallScreenADs {
+    height: 300px !important;
+  }
+  .Footer {
+    display: flex !important;
+    justify-content: center !important;
+  }
+}
+a {
+  text-decoration: none !important;
+}

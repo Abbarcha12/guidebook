@@ -1,0 +1,68 @@
+# CI/CD Pipeline for development builds for the latest merged features.
+#
+# This pipeline is designed to build/test/deploy MRI Chatbot product.
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+
+pr: none
+
+variables:
+  system.debug: false
+  defaultVmImage: 'windows-latest'
+  pipelineMoniker: 'dev-deploy'
+  commonImageTagLatest: 'latest-$(pipelineMoniker)'
+  commonImageTagForBuild: $(Build.BuildNumber)-$(pipelineMoniker)
+  productName: 'guidebooks'
+  webAppName: 'guidebooksapi'
+
+stages:
+#   - stage: test
+#     displayName: Test
+#     jobs:
+#       - job: buildAndTest
+#         pool:
+#           vmImage: $(defaultVmImage)
+#        steps:
+#           - template: templates/steps/run-dot-net-unit-tests.yml
+
+  - stage: build
+    displayName: Build
+#    dependsOn:
+#      - test
+    jobs:    
+    - template: templates/jobs/build-and-publish-guidebooks-app.yml
+      parameters:    
+        vmImage: $(defaultVmImage)
+        productName: ${{ variables.productName }}
+        webAppName: ${{ variables.webAppName }}
+
+  - stage: devUsaDeploy
+    displayName: Deploy to Development for USA region
+    dependsOn:
+      - build
+    variables:
+       randomId: f29d
+#      - group: 'dev-usa-${{ variables.productName }}-variables'
+#      - group: 'dev-usa-${{ variables.productName }}-variables-secure'
+    jobs:
+      - job:    DeployApp
+        displayName: 'Deploy App'        
+        steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: '${{ variables.webAppName }}-package-zip'
+              targetPath: '$(Build.ArtifactStagingDirectory)/${{ variables.webAppName }}'
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'azdo-guidebooks-usa-polel01-arm'
+              appType: 'webApp'
+#              JSONFiles: 'appsettings.Production.json'
+              WebAppName: 'wa-${{ variables.webAppName }}-dev-${{ variables.randomId }}'
+              deployToSlotOrASE: false
+              Package: '$(Build.ArtifactStagingDirectory)/${{ variables.webAppName }}/${{ variables.productName }}-package.zip'

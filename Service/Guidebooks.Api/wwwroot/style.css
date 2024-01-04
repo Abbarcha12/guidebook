@@ -1,0 +1,420 @@
+.header {
+  height: 90px;
+  justify-content: center;
+  align-items: center;
+  gap: 456px;
+  background: var(--bw-white, #fff);
+  box-shadow: 0px 10px 29px 2px rgba(0, 0, 0, 0.1);
+}
+
+.nav {
+  height: 100%;
+}
+
+.Select {
+  border: none !important;
+  text-transform: uppercase !important;
+  justify-content: center;
+  align-items: center;
+  font-family: DM Sans !important;
+  font-size: 14px !important;
+}
+
+.Select:focus {
+  border: none !important;
+}
+
+.Hero_Sectio {
+  background-image: url("./images/Image.png");
+  position: relative;
+  height: 650px;
+  background-size: cover;
+  background-position: center;
+  background-position: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.Hero_Sectio::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Adjust the alpha value for the overlay darkness */
+}
+.Hero_Sectio .overlay {
+  position: absolute !important;
+  left: 50%;
+  width: 100% !important;
+  right: 50%;
+  top: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  right: auto;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+.MainHeading {
+  color: #fff;
+  text-align: center;
+  text-shadow: 0px 10px 29px rgba(0, 0, 0, 0.1);
+  max-width: 850px;
+  font-family: Enriqueta;
+  font-size: 4rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%;
+  /* 112px */
+}
+
+.Btn {
+  border-radius: 4.303px;
+  border: 0.269px solid #dbe8d3;
+  background: #161616;
+  padding: 10px 46px;
+  justify-content: center;
+  align-items: center;
+  gap: 2.689px;
+  color: #fff;
+  text-shadow: 0px 8.103px 23.499px rgba(0, 0, 0, 0.1);
+  font-family: Enriqueta;
+  font-size: 15.45px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%;
+  /* 21.63px */
+}
+
+.Btn1 {
+  border-radius: 4.303px;
+  border: 0.134px solid rgba(0, 0, 0, 0.35);
+  margin-left: 20px;
+  background: #ffffff;
+  padding: 10px 32px;
+  justify-content: center;
+  align-items: center;
+  gap: 2.689px;
+  color: #050505;
+  text-shadow: 0px 8.103px 23.499px rgba(0, 0, 0, 0.1);
+  font-family: Enriqueta;
+  font-size: 15.45px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%;
+  /* 21.63px */
+}
+
+.HeadingTwo {
+  color: #161616;
+  padding-top: 12px !important;
+  padding-bottom: 12px;
+  text-shadow: 0px 10px 29px rgba(0, 0, 0, 0.1);
+  font-family: DM Sans !important;
+
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%;
+  text-transform: uppercase;
+}
+
+.line {
+  width: 78px;
+  margin-right: 10px;
+  height: 8px;
+  background-color: #ba7d5c;
+  margin-bottom: 10px;
+}
+.line1 {
+  width: 78px;
+  margin-right: 30px;
+  height: 4px;
+  background-color: #ba7d5c;
+}
+
+.exploreCard {
+  height: 350px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: relative;
+  justify-content: center;
+  display: flex;
+}
+
+.miniCard {
+  top: 70%;
+
+  position: absolute;
+  width: 95%;
+  min-height: 200px;
+  align-items: center;
+  border-radius: 16px;
+  border: 0.5px solid #161616;
+  background: #fff;
+}
+.miniCard:hover {
+  background-color: #050505;
+  color: #fff;
+}
+
+.miniCard:hover .title {
+  color: #ffff;
+}
+.miniCard:hover .Cardtext {
+  color: #ffff;
+}
+
+.title {
+  color: #5b5958;
+  text-shadow: 0px 10px 29px rgba(0, 0, 0, 0.1);
+  font-family: Enriqueta !important;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%;
+}
+
+.Cardtext {
+  color: #5b5958;
+  /* Easy Ease */
+  text-shadow: 0px 10px 29px rgba(0, 0, 0, 0.1);
+  font-family: DM Sans !important;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
+  /* 19.6px */
+}
+.FooterText {
+  color: #565656;
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: League Spartan;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 180%; /* 28.8px */
+}
+.footer {
+  margin-top: 190px;
+}
+.CardHeight {
+  padding-bottom: 80px !important;
+}
+.ImageClss {
+  width: 100%;
+}
+.ExploreBtn {
+  border-radius: 6px;
+  border: 1px solid #161616;
+  justify-content: center;
+  font-family: DM Sans !important;
+  text-transform: uppercase !important;
+  align-items: center;
+  padding: 7px 33px;
+  background-color: white;
+}
+.miniCard:hover .ExploreBtn {
+  color: #ffff;
+  background-color: #ba7d5c;
+}
+.Foodies {
+  margin-top: 65px;
+  margin-bottom: 30px;
+}
+@media screen and (max-width: 754px) {
+  .smallScreen {
+    display: none;
+  }
+  .CardHeight {
+    margin-top: -50px !important;
+  }
+  .miniCard {
+    max-height: auto;
+  }
+  .header {
+    padding: 10px;
+  }
+  .MainHeading {
+    font-size: 24px;
+    line-height: 34px;
+    max-width: 350px;
+    text-transform: capitalize;
+  }
+  .Hero_Sectio {
+    height: 300px;
+  }
+  .Btn {
+    padding: 10px 30px;
+    font-size: 12px;
+  }
+  .Btn1 {
+    padding: 10px 30px;
+    font-size: 12px;
+  }
+  .HeadingTwo {
+    font-family: Enriqueta !important;
+    font-size: 40px;
+    line-height: 26px;
+    margin-top: 5px;
+    font-weight: 700;
+  }
+  .line {
+    height: 3px;
+    width: 38px;
+    margin-bottom: 0;
+  }
+  .default {
+    margin-top: 50px;
+  }
+  .defaultHeight {
+    margin-top: 100px;
+  }
+  .FooterText {
+    font-size: 12px;
+  }
+  .Foodies {
+    margin-bottom: 0px;
+  }
+}
+
+.Hide {
+  display: none;
+}
+.center-div {
+  width: 300px;
+  height: 300px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -150px;
+  margin-top: -150px;
+}
+
+.spinner {
+  position: fixed;
+  z-index: 999;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: #89cff0;
+}
+
+.loader {
+  margin: auto;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #15a0ec;
+  border-bottom: 16px solid #15a0ec;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+.exploreCard {
+  cursor: pointer;
+}
+
+.inner-div {
+  background-color: white;
+  border-radius: 15px;
+  margin: auto;
+  padding: 2%;
+  width: 150px;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@media screen and (max-width: 665px) {
+  .ImageClss {
+    height: 250px !important;
+  }
+  .miniCard {
+    top: 55% !important;
+    width: 92% !important ;
+  }
+  .HeadingTwo {
+    font-family: Enriqueta !important;
+    font-size: 30px !important;
+    font-weight: 700 !important;
+  }
+  .Foodies {
+    margin-top: 0px;
+  }
+  #tab1 {
+    margin-top: 44px;
+  }
+}
+@media screen and (max-width: 375px) {
+  .ImageClss {
+    height: 200px !important;
+  }
+  .miniCard {
+    top: 42% !important;
+    width: 97% !important ;
+    min-height: auto !important;
+  }
+  .title {
+    font-size: 14px !important;
+  }
+  .Cardtext {
+    font-size: 9px !important;
+  }
+  .ExploreBtn {
+    padding: 4px 25px !important;
+    font-size: 10px !important;
+    text-transform: uppercase !important;
+  }
+  .CardHeight {
+    margin-top: 0px !important;
+    padding-bottom: 0px !important;
+  }
+  .defaultHeight {
+    margin-top: 0px !important;
+  }
+  .exploreCard {
+    height: 300px !important;
+  }
+  .Foodies {
+    margin-top: 0px !important;
+    margin-bottom: 10px !important;
+  }
+  .footer {
+    margin-top: 0px !important;
+  }
+  .HeadingTwo {
+    font-family: Enriqueta !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+  }
+}

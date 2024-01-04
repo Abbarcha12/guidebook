@@ -1,0 +1,36 @@
+parameters:
+# Any environment variables to inject into valueFile
+#
+- name: environmentVariables
+  type: object
+  displayName: Environment Variables for Value File Injection
+  default: null
+
+# Working directory where terraform is run (root module)
+#
+- name: workingDirectory
+  displayName: Terraform Root Module Directory
+  type: string
+  default: $(System.DefaultWorkingDirectory)
+
+# TFVARS file
+#
+- name: tfvarsFile
+  displayName: Path to tfvars file
+  type: string
+
+steps:
+- task: Bash@3
+  displayName: Variable injection into tfvars
+  env:
+    # Loop over any environment varialbes passed in the environmentVariables object
+    #
+    ${{ each var in parameters.environmentVariables }}:
+      ${{ var.key }}: ${{var.value}}
+  inputs:
+    targetType: 'inline'
+    workingDirectory: ${{ parameters.workingDirectory }}
+    script: |
+      echo "Injecting variables into ${{ parameters.tfvarsFile }}..."
+      envsubst < ${{ parameters.workingDirectory }}/${{ parameters.tfvarsFile }} | tee ${{ parameters.workingDirectory }}/${{ parameters.tfvarsFile }}.injected
+      mv ${{ parameters.workingDirectory }}/${{ parameters.tfvarsFile }}.injected ${{ parameters.workingDirectory }}/${{ parameters.tfvarsFile }}
