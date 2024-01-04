@@ -365,17 +365,17 @@
   }
   .HeadingTwo {
     font-family: Enriqueta !important;
-    font-size: 30px !important;
+    font-size: 23px !important;
     font-weight: 700 !important;
   }
   .Foodies {
     margin-top: 0px;
   }
   #tab1 {
-    margin-top: 44px;
+    margin-top: 44px !important;
   }
 }
-@media screen and (max-width: 375px) {
+@media screen and (max-width: 385px) {
   .ImageClss {
     height: 200px !important;
   }
@@ -406,11 +406,14 @@
     height: 300px !important;
   }
   .Foodies {
-    margin-top: 0px !important;
-    margin-bottom: 10px !important;
+    margin-top: -22px !important;
+    margin-bottom: 17px !important;
   }
   .footer {
     margin-top: 0px !important;
+  }
+  #tab1 {
+    margin-top: 18px !important;
   }
   .HeadingTwo {
     font-family: Enriqueta !important;
